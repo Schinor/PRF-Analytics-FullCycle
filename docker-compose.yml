@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # --- Serviço de Banco de Dados (PostgreSQL) ---
+  db:
+    image: postgres:15-alpine
+    container_name: prf_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-admin}         # Pega do .env ou usa padrão
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin} # Pega do .env ou usa padrão
+      POSTGRES_DB: prf_analytics
+    ports:
+      - "5432:5432" # Libera acesso local para seu DBeaver/VS Code
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # PERSISTÊNCIA: Não perde dados se desligar
+    networks:
+      - prf-network
+
+  # --- Interface Visual do Banco (PgAdmin) ---
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: prf_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80" # Acesso via http://localhost:5050
+    depends_on:
+      - db
+    networks:
+      - prf-network
+
+  # --- Sua API (FastAPI) ---
+  api:
+    build: ./api  # Onde está o Dockerfile
+    container_name: prf_api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./api:/app # HOT-RELOAD: O que você edita no VS Code muda no container na hora
+    ports:
+      - "8000:8000" # Acesso via http://localhost:8000
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER:-admin}:${DB_PASSWORD:-admin}@db:5432/prf_analytics
+    depends_on:
+      - db
+    networks:
+      - prf-network
+
+# Criação do Volume (HD Virtual do Docker)
+volumes:
+  postgres_data:
+
+# Rede interna para eles conversarem
+networks:
+  prf-network:
+    driver: bridge
