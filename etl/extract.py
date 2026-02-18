@@ -3,6 +3,12 @@ import os
 import zipfile
 import re  # Importamos Regex para extrair o ano com precisão
 from playwright.async_api import async_playwright
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Importando os paths
+RAW_DATA_PATH = os.getenv("RAW_DATA_PATH")
 
 # --- FUNÇÃO AUXILIAR: Extração ---
 def extrair_arquivo_zip(caminho_zip, pasta_destino):
@@ -23,13 +29,13 @@ async def main():
         # --- 1. CONFIGURAÇÃO DE PASTAS ---
         diretorio_script = os.path.dirname(os.path.abspath(__file__))
         diretorio_raiz = os.path.dirname(diretorio_script)
-        pasta_destino = os.path.join(diretorio_raiz, "data")
+        pasta_destino = os.path.join(diretorio_raiz, RAW_DATA_PATH)
         
         os.makedirs(pasta_destino, exist_ok=True)
         print(f"Diretório de verificação/saída: {pasta_destino}")
 
         # --- 2. INICIALIZAÇÃO DO NAVEGADOR ---
-        browser = await p.chromium.launch(headless=False)
+        browser = await p.chromium.launch(headless=True)
         context = await browser.new_context(accept_downloads=True)
         page = await context.new_page()
 
