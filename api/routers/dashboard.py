@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 dashboard_router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 @dashboard_router.get("/")
-async def helloword():
+async def hello_word():
     """
     Função para validar funcionamento da rota. Está rota é para pegar dados para montagem de dashboards.
     """
