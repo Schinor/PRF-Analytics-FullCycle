@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # --- Serviço de Banco de Dados (PostgreSQL) ---
   db:
@@ -33,20 +31,20 @@ services:
       - prf-network
 
   # --- API (FastAPI) ---
-  api:
-    build: ./api  # Onde está o Dockerfile
-    container_name: prf_api
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    volumes:
-      - ./api:/app # HOT-RELOAD: O que você edita no VS Code muda no container na hora
-    ports:
-      - "8000:8000" # Acesso via http://localhost:8000
-    environment:
-      - DATABASE_URL=postgresql://${DB_USER:-admin}:${DB_PASSWORD:-admin}@db:5432/prf_analytics
-    depends_on:
-      - db
-    networks:
-      - prf-network
+  # api:
+  #   build: ./api  # Onde está o Dockerfile
+  #   container_name: prf_api
+  #   command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+  #   volumes:
+  #     - ./api:/app # HOT-RELOAD: O que você edita no VS Code muda no container na hora
+  #   ports:
+  #     - "8000:8000" # Acesso via http://localhost:8000
+  #   environment:
+  #     - DATABASE_URL=postgresql://${DB_USER:-admin}:${DB_PASSWORD:-admin}@db:5432/prf_analytics
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - prf-network
 
 # Criação do Volume (HD Virtual do Docker)
 volumes:

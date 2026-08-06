@@ -6,3 +6,5 @@ psycopg2-binary
 pydantic
 requests
 pandas
+python-dotenv
+alembic
