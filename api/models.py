@@ -91,6 +91,7 @@ class Acidentes_Registrados(Base):
     ignorados: Mapped[Optional[int]] = mapped_column(Integer)
     feridos: Mapped[Optional[int]] = mapped_column(Integer)
     veiculos: Mapped[Optional[int]] = mapped_column(Integer)
+    origem_coordenada: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
 
     regional_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("Regional.id", onupdate="SET NULL", ondelete="SET NULL")
@@ -103,8 +104,3 @@ class Acidentes_Registrados(Base):
     )
 
     is_fimdesemana: Mapped[bool] = mapped_column(Boolean, nullable=False)
-
-
-# Observacao: a tabela "Usuario" do seu SQL original nao esta neste arquivo de
-# models. Se ela ainda for necessaria no projeto, precisa ser adicionada aqui
-# tambem -- do jeito que esta, Base.metadata.create_all() nao vai cria-la.
